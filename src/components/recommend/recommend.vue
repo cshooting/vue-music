@@ -1,56 +1,91 @@
 <template>
   <div class="recommend" ref="recommend">
-    <div class="recommend-content">
-      <div v-if="recommends.length" class="slider-wrapper" ref="sliderWrapper">
-        <!--轮播图组件-->
-        <swiper :options="swiperOption" class="swiper-container">
-          <swiper-slide v-for="(item,index) in recommends" :key="index">
-            <a :href="item.linkUrl">
-              <img :src="item.picUrl" class="img-size">
-            </a>
-          </swiper-slide>
-          <div class="swiper-pagination" slot="pagination"></div>
-        </swiper>
+    <scroll class="recommend-content" ref="scroll" :data="discList">
+      <div>
+        <div v-if="recommends.length" class="slider-wrapper" ref="sliderWrapper">
+          <!--轮播图组件-->
+          <swiper :options="swiperOption" class="swiper-container">
+            <swiper-slide v-for="(item,index) in recommends" :key="index">
+              <a :href="item.linkUrl">
+                <img :src="item.picUrl" class="img-size" @load="loadImage">
+              </a>
+            </swiper-slide>
+            <div class="swiper-pagination" slot="pagination"></div>
+          </swiper>
+        </div>
+        <div class="recommend-list">
+          <h1 class="list-title">热门歌单推荐</h1>
+          <ul>
+            <li v-for="item in discList" class="item">
+              <div class="icon">
+                <img v-lazy="item.imgurl" width="60" height="60">
+              </div>
+              <div class="text">
+                <h2 class="name">{{item.creator.name}}</h2>
+                <p class="desc">{{item.dissname}}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="recommend-list">
-        <h1 class="list-title">热门歌单推荐</h1>
+      <div class="loading-container" v-show="!discList.length">
+        <loading></loading>
       </div>
-    </div>
+    </scroll>
   </div>
 </template>
 
 <script>
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import 'swiper/dist/css/swiper.css'
-  import {getRecommend} from '@/api/recommend'
+  import {getRecommend, getDiscList} from '@/api/recommend'
   import {ERR_OK} from "@/api/config"
+  import Scroll from "@/base/scroll/scroll";
+  import Loading from "@/base/loading/loading";
 
 
   export default {
     name: "recommend",
-    components: {swiper, swiperSlide},
+    components: {Loading, Scroll, swiper, swiperSlide},
     data(){
       return {
+        checkloaded: true,
         recommends: [],
+        discList: [],
         //设置轮播图组件参数
         swiperOption:{
           pagination:{el:".swiper-pagination"},
           loop:true, //循环播放
           //每张播放时长3秒，自动播放
-          autoplay:2000,
+          autoplay:true,
           speed:1000   //图片滑动速度
         }
       }
     },
     created(){
       this._getRecommend();
+      this._getDiscList();
     },
     methods:{
+      loadImage(){
+        if (!this.checkloaded) {
+          this.$refs.scroll.refresh();
+          this.checkloaded = true;
+        }
+      },
       _getRecommend(){
         getRecommend().then((res)=>{
           if (res.code == ERR_OK){
             this.recommends = res.data.slider;
             console.log(this.recommends);
+          }
+        })
+      },
+      _getDiscList(){
+        getDiscList().then((res)=>{
+          if (res.code == ERR_OK){
+            this.discList = res.data.list;
+            console.log(this.discList);
           }
         })
       }
@@ -86,8 +121,8 @@
               width 100%
       /*>>>样式穿透，修改第三方组件的样式*/
       .slider-wrapper >>> .swiper-pagination-bullet-active
-        width 14px
-        height 8px
+        width 20px
+        border-radius 5px
       .recommend-list
         .list-title
           height 65px
@@ -95,4 +130,25 @@
           text-align center
           font-size $font-size-medium
           color $color-theme
+        .item
+          display flex
+          align-items center
+          padding 0 20px 20px 20px
+          .icon
+            flex 0 0 60px
+            width 60px
+            padding-right 20px
+          .text
+            flex 1
+            line-height 20px
+            font-size $font-size-medium
+            overflow hidden
+            .name
+              margin-bottom 10px
+              color $color-text
+            .desc
+              color $color-text-d
+    .loading-container
+      display flex
+      align-items center
 </style>

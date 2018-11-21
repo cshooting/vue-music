@@ -36,29 +36,5 @@ const router = new VueRouter({
       component: Search
     }]
 })
-// const routes = [
-//   {
-//     path:"/",
-//     redirect:"/recommend"
-//   },
-//   {
-//     path:"/recommend",
-//     name:"Recommend",
-//     component: Recommend,
-//   },
-//   {
-//     path:"/singer",
-//     name:"Singer",
-//     component: Singer,
-//   },
-//   {
-//     path:"rank",
-//     name:"Rank",
-//     component: Rank,
-//   },
-//   {
-//     path:"search",
-//     name:"Search",
-//     component: Search
-//   }];
+
 export default router
