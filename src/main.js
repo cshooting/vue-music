@@ -3,6 +3,7 @@ import Vue from 'vue'
 import App from './App'
 import router from '@/router/router'
 import fastclick from 'fastclick'
+import store from './store'
 // import vueAwesomeSwiper from 'vue-awesome-swiper'
 // import "swiper/dist/css/swiper.css"
 import 'common/stylus/index.styl'
@@ -16,5 +17,6 @@ Vue.use(VueLazyLoad,{
 new Vue({
   el: '#app',
   router,
+  store,
   render:h => h(App)
 });
