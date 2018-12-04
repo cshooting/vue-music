@@ -82,7 +82,7 @@
         return hot.concat(ret);
       },
       ...mapMutations({
-        setSinger:'SET_SINGER'
+        setSinger:'SET_SINGER' //把this.setSinger(setSinger) 映射为this.$store.commit(setSinger)
       })
     }
   }
