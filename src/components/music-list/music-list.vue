@@ -15,7 +15,7 @@
     <div class="bg-layer" ref="layer"></div>
     <scroll @scroll="scroll" :probeType="probeType" :listenScroll="listenScroll" :data="songs" ref="list" class="list">
       <div class="song-list-wrapper">
-        <song-list :songs="songs"></song-list>
+        <song-list @select="selectItem" :songs="songs"></song-list>
       </div>
     </scroll>
   </div>
@@ -25,6 +25,7 @@
   import Scroll from "@/base/scroll/scroll"
   import SongList from "@/base/song-list/song-list"
   import {prefixStyle} from "@/common/js/dom";
+  import {mapActions} from 'vuex'
 
   const RESERVED_HEIGHT = 40
   const transform = prefixStyle("transform")  //prefixStyle函数检测浏览器兼容性
@@ -71,7 +72,16 @@
       },
       back(){
         this.$router.back();
-      }
+      },
+      selectItem(item,index){
+        this.selectPlay({
+          list: this.songs,
+          index: index
+        })
+      },
+      ...mapActions([
+        'selectPlay'
+      ])
     },
     watch:{
       scrollY(newVal) {
