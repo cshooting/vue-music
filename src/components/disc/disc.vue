@@ -1,20 +1,20 @@
 <template>
   <transition name="slide">
-    <music-list :songs="songs" :title="title" :bgImage="bgImage"></music-list>
+    <music-list :title="title" :bgImage="bgImage" :songs="songs"></music-list>
   </transition>
 
 </template>
 
 <script>
   import {mapGetters} from 'vuex'
-  import {getSingerDetail} from "@/api/singer"
-  import {getSongVkey} from "../../api/song"
+  import {getSongList} from "@/api/recommend"
+  import {getSongVkey} from "../../api/song";
   import {createSong} from "@/common/js/song"
   import {ERR_OK} from "@/api/config"
   import MusicList from "@/components/music-list/music-list"
 
   export default {
-    name: "singer-detail",
+    name: "disc",
     components: {MusicList},
     data() {
       return {
@@ -23,36 +23,36 @@
     },
     computed: {
       title(){
-        return this.singer.name;
+        return this.disc.dissname;
       },
       bgImage(){
-        return this.singer.avatar;
+        return this.disc.imgurl;
       },
       ...mapGetters([
-        'singer'
+        'disc'
       ])
     },
     created() {
-      this._getSingerDetail();
+      this._getSongList();
     },
     methods: {
-      _getSingerDetail() {
-        if (!this.singer.id) {
-          this.$router.push('/singer');
-          return;
+      _getSongList(){
+        if (!this.disc.dissid){
+          this.$router.push('/recommend');
+          return
         }
-        getSingerDetail(this.singer.id).then((res) => {
-          if (res.code === ERR_OK) {
-            this.songs = this._normalizeSong(res.data.list)
-            console.log(this.songs)
+        getSongList(this.disc.dissid).then((res)=>{
+          if (res.code == ERR_OK){
+            console.log(res.cdlist[0].songlist);
+            this.songs = this._normalizeSongs(res.cdlist[0].songlist);
           }
         })
       },
-      _normalizeSong(list){
+      _normalizeSongs(list){
         let ret = [];
-        list.forEach((item)=>{
-          let {musicData} = item;
+        list.forEach((musicData)=>{
           getSongVkey(musicData.songmid).then((res)=>{
+            // console.log("vkey="+res.data.items[0].vkey)
             const vkey = res.data.items[0].vkey;
             if (musicData.songid && musicData.albummid){
               ret.push(createSong(musicData,vkey));

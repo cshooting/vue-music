@@ -148,14 +148,13 @@
         setPlayingState: 'SET_PLAYING_STATE'
       })
     },
-    /*
     watch: {
       currentSong(){
         this.$nextTick(()=>{
           this.$refs.audio.play()
         })
       }
-    }*/
+    }
   }
 </script>
 
