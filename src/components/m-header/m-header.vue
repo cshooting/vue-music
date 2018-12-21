@@ -28,7 +28,8 @@
       width 30px
       height 32px
       margin-right 9px
-      bg-image("logo")
+      //bg-image("logo")
+      background-image url(logo.png)
       background-size 30px 32px
       background-repeat no-repeat
     .text
