@@ -15,7 +15,7 @@
     <div class="bg-layer" ref="layer"></div>
     <scroll @scroll="scroll" :probeType="probeType" :listenScroll="listenScroll" :data="songs" ref="list" class="list">
       <div class="song-list-wrapper">
-        <song-list @select="selectItem" :songs="songs"></song-list>
+        <song-list @select="selectItem" :songs="songs" :rank="rank"></song-list>
       </div>
     </scroll>
   </div>
@@ -45,6 +45,10 @@
       title:{
         type: String,
         default: ""
+      },
+      rank:{
+        type:Boolean,
+        default:false
       }
     },
     data(){

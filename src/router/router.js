@@ -7,6 +7,7 @@ import Rank from 'components/rank/rank'
 import Search from 'components/search/search'
 import SingerDetail from 'components/singer-detail/singer-detail'
 import Disc from 'components/disc/disc'
+import TopList from 'components/toplist/toplist'
 Vue.use(VueRouter)
 const router = new VueRouter({
   linkActiveClass:"active",
@@ -38,6 +39,10 @@ const router = new VueRouter({
       path:"/rank",
       name:"Rank",
       component: Rank,
+      children:[{
+        path: ':id',
+        component:TopList
+      }]
     },
     {
       path:"/search",
