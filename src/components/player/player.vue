@@ -30,7 +30,7 @@
           <div class="progress-wrapper">
             <span class="time time-l">{{formatTime(currentTime)}}</span>
             <div class="progress-bar-wrapper">
-              <progress-bar :percent="percent"></progress-bar>
+              <progress-bar :percent="percent" @percentChange="onProgressBarChange"></progress-bar>
             </div>
             <div class="time time-r">{{formatTime(currentSong.duration)}}</div>
           </div>
@@ -64,7 +64,9 @@
           <p class="desc" v-html="currentSong.singer"></p>
         </div>
         <div class="control">
-          <i @click.stop="togglePlaying" :class="miniPlayIcon"></i>
+          <progress-circle :radius="radius" :percent="percent">
+            <i @click.stop="togglePlaying" :class="miniPlayIcon" class="miniIcon"></i>
+          </progress-circle>
         </div>
         <div class="control">
           <i class="icon-playlist"></i>
@@ -82,16 +84,18 @@
   import ProgressBar from "@/base/progress-bar/progress-bar"
   import {playMode} from "@/common/js/config";
   import {shuffle} from "@/common/js/util";
+  import ProgressCircle from "../../base/progress-circle/progress-circle";
 
   const transform = prefixStyle('transform')
 
   export default {
     name: "player",
-    components: {ProgressBar},
+    components: {ProgressCircle, ProgressBar},
     data(){
       return {
         songReady:false,
-        currentTime:0
+        currentTime:0,
+        radius: 32
       }
     },
     computed: {
@@ -262,6 +266,12 @@
           return item.id === this.currentSong.id;
         })
         this.setCurrentIndex(index);
+      },
+      onProgressBarChange(percent){
+        this.$refs.audio.currentTime = this.currentSong.duration*percent;
+        if(!this.playing){
+          this.togglePlaying();
+        }
       },
       ...mapMutations({
         setFullScreen: 'SET_FULL_SCREEN',
@@ -466,6 +476,10 @@
         padding 0 10px
         font-size 30px
         color $color-theme-d
+        .miniIcon
+          position absolute
+          left 0
+          top 0
   @keyframes rotate
     0%
       transform rotate(0)
