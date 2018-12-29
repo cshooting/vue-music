@@ -23,6 +23,7 @@
     },
     created(){
       this._getSingerList();
+
     },
     methods:{
       selectSinger(singer){

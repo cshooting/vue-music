@@ -13,7 +13,10 @@
             <div class="swiper-pagination" slot="pagination"></div>
           </swiper>
         </div>
-        <div class="recommend-list">
+        <div class="recommend-list" ref="recommendList">
+             <!--@touchstart.prevent="touchStart"-->
+             <!--@touchmove.prevent="touchMove"-->
+             <!--@touchend="touchEnd"-->
           <h1 class="list-title">热门歌单推荐</h1>
           <ul>
             <li @click="selectItem(item)" v-for="item in discList" class="item">
@@ -51,6 +54,7 @@
     components: {Loading, Scroll, swiper, swiperSlide},
     data(){
       return {
+        percent: 0,
         checkloaded: true,
         recommends: [],
         discList: [],
@@ -67,6 +71,7 @@
     created(){
       this._getRecommend();
       this._getDiscList();
+      this.touch={};
     },
     methods:{
       loadImage(){
@@ -96,6 +101,23 @@
           path:`/recommend/${item.dissid}`
         });
         this.setDisc(item);
+      },
+      touchStart(e){
+        console.log(e);
+        this.touch.startX = e.touches[0].pageX;
+        // console.log(width+","+this.touch.startX)
+      },
+      touchMove(e){
+        const detalX = e.touches[0].pageX-this.touch.startX;
+        this.percent = detalX / window.innerWidth;
+        // console.log("detalX="+detalX+"percent="+this.percent);
+      },
+      touchEnd(){
+        if (this.percent > 0.1){
+          this.$router.push({
+            path:`/singer`
+          })
+        }
       },
       ...mapMutations({
         setDisc:"SET_DISC"
